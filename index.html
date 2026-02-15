@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- Correct Model Viewer CDN -->
   <script type="module"
     src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
   </script>
@@ -10,21 +12,79 @@
   <style>
     body {
       margin: 0;
-      background: #ffffff;
-      text-align: center;
+      background-color: #ffffff;
       font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    .instructions {
+      padding: 25px;
+      font-size: 18px;
+      font-weight: 700;
+      background: white;
+      color: #222;
+      border-bottom: 2px solid #000;
+    }
+
+    .timer {
+      font-size: 14px;
+      margin: 8px;
     }
   </style>
 </head>
 
 <body>
 
+  <!-- Instructions -->
+  <div class="instructions">
+    🔄 Drag to rotate • 🔍 Pinch to zoom • 📱 Tap "View in your space" for AR
+  </div>
+
+  <!-- Timer -->
+  <div class="timer">
+    Time spent: <span id="time">0</span> seconds
+  </div>
+
+  <!-- 3D Model -->
   <model-viewer
-    src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+    id="model"
+    src="whitedonut.glb"
+    ar
+    ar-modes="scene-viewer webxr quick-look"
+    ar-placement="floor"
+    ar-scale="fixed"
     camera-controls
-    auto-rotate
-    style="width:100%; height:100vh;">
+    shadow-intensity="1"
+    environment-image="neutral"
+    exposure="1"
+    ar-button-text="View in your space"
+    scale="0.4 0.4 0.4"
+    camera-orbit="0deg 75deg 0.6m"
+    camera-target="0m 0m 0m"
+    style="width:100%; height:75vh;">
   </model-viewer>
 
+  <script>
+    let seconds = 0;
+
+    setInterval(() => {
+      seconds++;
+      document.getElementById("time").innerText = seconds;
+    }, 1000);
+
+    const model = document.getElementById("model");
+
+    model.addEventListener("camera-change", () => {
+      console.log("User rotated or zoomed model");
+    });
+
+    model.addEventListener("ar-status", (event) => {
+      if (event.detail.status === "session-started") {
+        console.log("AR session started");
+      }
+    });
+  </script>
+
 </body>
+
 </html>
